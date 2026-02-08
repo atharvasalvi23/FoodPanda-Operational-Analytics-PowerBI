@@ -1,0 +1,105 @@
+## 📐 Key DAX Measures
+
+### 1️⃣ % Cancelled Orders
+
+% Cancelled Orders =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(Table1),
+        Table1[delivery_status] = "Cancelled"
+    ),
+    COUNTROWS(Table1)
+)
+
+> Calculates the percentage of cancelled orders dynamically based on current filter selections.
+
+
+### 2️⃣ % Cash Payments KPI
+
+% Cash Payments KPI =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(Table1),
+        Table1[payment_method] = "Cash"
+    ),
+    COUNTROWS(Table1)
+)
+
+> Measures the proportion of orders paid via Cash relative to total filtered orders.
+
+
+### 3️⃣ Top Gender by Orders
+
+Top Gender Name =
+VAR GenderOrders =
+    ADDCOLUMNS(
+        ALL(Table1[gender]),
+        "Order Count", COUNTROWS(Table1)
+    )
+RETURN
+    MAXX(
+        TOPN(1, GenderOrders, [Order Count], DESC),
+        Table1[gender]
+    )
+
+> Identifies the gender segment with the highest number of orders.
+
+
+### 4️⃣ Dish with Maximum Revenue
+
+Dish with Max Revenue =
+VAR MaxRevenue =
+    MAXX(
+        ALL(Table1[dish_name]),
+        [Total Revenue]
+    )
+RETURN
+    CALCULATE(
+        FIRSTNONBLANK(Table1[dish_name], 1),
+        FILTER(
+            ALL(Table1[dish_name]),
+            [Total Revenue] = MaxRevenue
+        )
+    )
+
+> Returns the dish contributing the highest revenue.
+
+
+### 5️⃣ Year with Maximum Revenue
+
+Year with Max Revenue =
+VAR MaxRevenue =
+    MAXX(
+        ALL(Table1[Year]),
+        [Total Revenue]
+    )
+RETURN
+    CALCULATE(
+        FIRSTNONBLANK(Table1[Year], 1),
+        FILTER(
+            ALL(Table1[Year]),
+            [Total Revenue] = MaxRevenue
+        )
+    )
+
+> Identifies the year generating the highest overall revenue.
+
+
+### 6️⃣ Region with Maximum Revenue
+
+Region with Max Revenue =
+VAR MaxRevenue =
+    MAXX(
+        ALL(Table1[city]),
+        [Total Revenue]
+    )
+RETURN
+    CALCULATE(
+        FIRSTNONBLANK(Table1[city], 1),
+        FILTER(
+            ALL(Table1[city]),
+            [Total Revenue] = MaxRevenue
+        )
+    )
+
+> Highlights the city contributing the highest revenue.
